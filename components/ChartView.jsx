@@ -1,17 +1,19 @@
-import { LineChart, Line, XAxis, YAxis, Tooltip, Legend } from "recharts";
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 export default function ChartView({ data, person }) {
-  const chartData = person
-    ? data.filter(d => d.person === person)
-    : data;
+  const chartData = person ? data.filter(d => d.person === person) : data;
 
   return (
-    <LineChart width={600} height={300} data={chartData}>
-      <XAxis dataKey="date" />
-      <YAxis />
-      <Tooltip />
-      <Legend />
-      <Line type="monotone" dataKey="miles run" stroke="#8884d8" />
-    </LineChart>
+    <div className="w-full h-80">
+      <ResponsiveContainer>
+        <LineChart data={chartData}>
+          <XAxis dataKey="date" tick={{ fontSize: 12 }} />
+          <YAxis tick={{ fontSize: 12 }} />
+          <Tooltip />
+          <Legend />
+          <Line type="monotone" dataKey="miles run" stroke="#2563eb" strokeWidth={2} />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   );
 }
