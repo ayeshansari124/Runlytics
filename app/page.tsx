@@ -9,7 +9,13 @@ export default function Home() {
   const [metrics, setMetrics] = useState(null);
   const [selectedPerson, setSelectedPerson] = useState("");
 
-  const handleData = (csvData) => {
+  interface CsvRow {
+  date: string;
+  person: string;
+  milesRun: number;
+}
+
+  const handleData = (csvData: CsvRow[]) => {
     setData(csvData);
     setMetrics(calculateMetrics(csvData));
     setSelectedPerson(""); // reset selection when new file uploaded
