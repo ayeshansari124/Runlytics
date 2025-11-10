@@ -122,12 +122,12 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="bg-black/20 rounded-xl shadow-sm p-4 text-sm backdrop-blur-sm">
+              {/* <div className="bg-black/20 rounded-xl shadow-sm p-4 text-sm backdrop-blur-sm">
                 <p>
                   <strong>Tip:</strong> Upload a sample CSV with more rows to
                   get better visual trends.
                 </p>
-              </div>
+              </div> */}
             </aside>
           </section>
         ) : (
