@@ -13,8 +13,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "dashboard",
-  description: "Next.js + Tailwind project",
+  title: "Runlytics",
+  description: "Track, analyze, and visualize your running data in seconds.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
