@@ -4,16 +4,33 @@ import FileUpload from "../components/FileUpload";
 import ChartView from "../components/ChartView";
 import { calculateMetrics } from "../utils/calcMetrics";
 
-export default function Home() {
-  const [data, setData] = useState([]);
-  const [metrics, setMetrics] = useState(null);
-  const [selectedPerson, setSelectedPerson] = useState("");
-
-  interface CsvRow {
+// Define CSV row structure
+interface CsvRow {
   date: string;
   person: string;
   milesRun: number;
 }
+
+// Define the structure returned by calculateMetrics
+interface Metrics {
+  overall: {
+    avg: number;
+    min: number;
+    max: number;
+  };
+  perPerson: {
+    [name: string]: {
+      avg: number;
+      min: number;
+      max: number;
+    };
+  };
+}
+
+export default function Home() {
+  const [data, setData] = useState<CsvRow[]>([]);
+  const [metrics, setMetrics] = useState<Metrics | null>(null);
+  const [selectedPerson, setSelectedPerson] = useState<string>("");
 
   const handleData = (csvData: CsvRow[]) => {
     setData(csvData);
@@ -22,14 +39,14 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen px-4 py-10">
+    <main className="min-h-screen px-4 py-10 text-white">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <header className="mb-8">
           <h1 className="text-3xl font-extrabold text-center">
             Runner Dashboard
           </h1>
-          <p className="mt-2 text-center text-sm">
+          <p className="mt-2 text-center text-sm text-gray-300">
             Upload a CSV (date, person, miles run) — validate, explore metrics,
             and visualize results.
           </p>
@@ -39,11 +56,9 @@ export default function Home() {
         <section className="bg-black/20 rounded-xl shadow-sm p-6 mb-6 backdrop-blur-sm">
           <h2 className="text-lg font-semibold mb-3">Upload CSV</h2>
           <FileUpload onData={handleData} />
-          <p className="mt-3 text-xs text-gray-500">
+          <p className="mt-3 text-xs text-gray-400">
             Sample CSV format:{" "}
-            <code className=" px-1 rounded">
-              date,person,miles run
-            </code>
+            <code className="px-1 rounded">date,person,miles run</code>
           </p>
         </section>
 
@@ -51,6 +66,7 @@ export default function Home() {
         {metrics ? (
           <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div className="md:col-span-2 space-y-6">
+              {/* Overall metrics */}
               <div className="bg-black/20 rounded-xl shadow-sm p-6 backdrop-blur-sm">
                 <h3 className="text-lg font-medium mb-3">Overall Metrics</h3>
                 <div className="flex items-center justify-between gap-4">
@@ -67,7 +83,7 @@ export default function Home() {
                     </p>
                   </div>
                   <div className="text-center flex-1">
-                    <p className="text-sm ">Max</p>
+                    <p className="text-sm">Max</p>
                     <p className="text-2xl font-semibold">
                       {metrics.overall.max}
                     </p>
@@ -75,6 +91,7 @@ export default function Home() {
                 </div>
               </div>
 
+              {/* Chart section */}
               <div className="bg-black/20 rounded-xl shadow-sm p-6 backdrop-blur-sm">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-medium">Miles Run Chart</h3>
@@ -101,7 +118,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right column: per-person quick metrics */}
+            {/* Per-person snapshot */}
             <aside className="space-y-6">
               <div className="bg-black/20 rounded-xl shadow-sm p-4 backdrop-blur-sm">
                 <h4 className="text-sm font-medium mb-3">
@@ -115,11 +132,11 @@ export default function Home() {
                     >
                       <div>
                         <p className="font-medium">{name}</p>
-                        <p className="text-xs">avg ● min ● max</p>
+                        <p className="text-xs text-gray-300">avg ● min ● max</p>
                       </div>
                       <div className="text-right">
                         <p className="text-sm font-semibold">{m.avg}</p>
-                        <p className="text-xs">
+                        <p className="text-xs text-gray-300">
                           {m.min} ● {m.max}
                         </p>
                       </div>
@@ -127,13 +144,6 @@ export default function Home() {
                   ))}
                 </div>
               </div>
-
-              {/* <div className="bg-black/20 rounded-xl shadow-sm p-4 text-sm backdrop-blur-sm">
-                <p>
-                  <strong>Tip:</strong> Upload a sample CSV with more rows to
-                  get better visual trends.
-                </p>
-              </div> */}
             </aside>
           </section>
         ) : (
@@ -142,7 +152,9 @@ export default function Home() {
           </section>
         )}
       </div>
-      <footer className="flex justify-center items-center p-5">Build With 💙 by Ayesha</footer>
+      <footer className="flex justify-center items-center p-5 text-gray-300">
+        Built with 💙 by Ayesha
+      </footer>
     </main>
   );
 }
