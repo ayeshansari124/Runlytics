@@ -142,6 +142,7 @@ export default function Home() {
           </section>
         )}
       </div>
+      <footer className="flex justify-center items-center p-5">Build With 💙 by Ayesha</footer>
     </main>
   );
 }
