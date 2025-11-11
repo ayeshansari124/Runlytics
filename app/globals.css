@@ -1,24 +1,24 @@
 @import "tailwindcss";
 
-/* Reset and layout */
+/* Reset & layout */
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  color:white;
+  color: white;
 }
 
 /* Background setup */
 body {
+  background: url("/bg.jpg") center/cover no-repeat fixed;
   position: relative;
-  background: url("/bg.jpg") center center / cover no-repeat fixed;
 }
 
-/* Add a dark overlay for dull effect */
+/* Dark overlay */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.3); 
+  background: rgba(0,0,0,0.3);
   z-index: -1;
 }

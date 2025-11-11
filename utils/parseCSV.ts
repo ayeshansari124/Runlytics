@@ -1,16 +1,11 @@
 import Papa from "papaparse";
 
-interface CsvRow {
+export interface CsvRow {
   date: string;
   person: string;
   "miles run": number;
 }
 
-/**
- * Parses a CSV file and validates its structure.
- * @param file - The CSV file to parse (File object from input)
- * @returns A promise that resolves with parsed data or rejects with validation errors.
- */
 export const parseCSV = (file: File): Promise<CsvRow[]> =>
   new Promise((resolve, reject) => {
     Papa.parse(file, {
@@ -19,38 +14,24 @@ export const parseCSV = (file: File): Promise<CsvRow[]> =>
       complete: (results) => {
         const errors: string[] = [];
         const headers = results.meta.fields || [];
-        const expected = ["date", "person", "miles run"];
+        const required = ["date", "person", "miles run"];
 
-        // ✅ Validate required headers
-        if (!expected.every((h) => headers.includes(h))) {
-          return reject([
-            "Invalid CSV headers. Required: date, person, miles run",
-          ]);
-        }
+        if (!required.every(h => headers.includes(h))) 
+          return reject([`CSV missing headers: ${required.join(", ")}`]);
 
-        // ✅ Validate data rows
-        const parsed: CsvRow[] = (results.data as any[]).map((row, index) => {
-          if (
-            !row.date ||
-            !row.person ||
-            row["miles run"] === undefined ||
-            row["miles run"] === ""
-          ) {
-            errors.push(`Row ${index + 1}: missing required fields`);
-          }
-
-          const miles = parseFloat(row["miles run"]);
-          if (isNaN(miles))
-            errors.push(`Row ${index + 1}: miles run is not a number`);
-          if (isNaN(new Date(row.date).getTime()))
-            errors.push(`Row ${index + 1}: invalid date`);
-
-          return { date: row.date, person: row.person, "miles run": miles };
+        const data: CsvRow[] = (results.data as any[]).map((row, i) => {
+          const date = row.date?.trim() || "";
+          const person = row.person?.trim() || "";
+          let miles = parseFloat((row["miles run"] ?? "0").toString().replace(/,/g, ""));
+          if (!date) errors.push(`Row ${i+1}: missing date`);
+          if (!person) errors.push(`Row ${i+1}: missing person`);
+          if (isNaN(miles)) { miles = 0; errors.push(`Row ${i+1}: invalid miles run`); }
+          if (date && isNaN(new Date(date).getTime())) errors.push(`Row ${i+1}: invalid date`);
+          return { date, person, "miles run": miles };
         });
 
-        if (errors.length) return reject(errors);
-        resolve(parsed);
+        errors.length ? reject(errors) : resolve(data);
       },
-      error: (err) => reject([err.message || "Failed to parse CSV"]),
+      error: (err) => reject([err.message || "Failed to parse CSV"])
     });
   });
